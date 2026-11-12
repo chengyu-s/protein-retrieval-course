@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Protein Function Retrieval | Sun Chengyu</title>
+  <meta name="description" content="A course analysis of protein function retrieval and whether replacing a structural representation improves the ranking.">
+  <link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to main content</a>
+  <header class="site">
+    <div class="wrap nav">
+      <a class="brand" href="index.html">Sun Chengyu</a>
+      <nav aria-label="Project sections">
+        <a href="#overview">Overview</a>
+        <a href="#explore">Results Explorer</a>
+        <a href="#method">Methods</a>
+        <a href="#resources">Resources</a>
+        <a href="https://github.com/chengyu-s">GitHub</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section id="overview" class="wrap opening">
+      <p class="eyebrow">Course Data Analysis Project</p>
+      <h1>Protein Function Retrieval</h1>
+      <p class="subtitle">Predicting the value of structure replacement</p>
+      <p class="lead">Replacing a structural representation does not guarantee better retrieval. This project examines which proteins benefit from replacement and compares prediction quality with the retrieval gains achieved after selection.</p>
+      <div class="actions">
+        <a class="button" href="#explore">Explore Results</a>
+        <a class="button ghost" href="#method">Read the Methods</a>
+      </div>
+      <dl class="facts">
+        <div>
+          <dt>Study proteins</dt>
+          <dd>2,000</dd>
+          <p>Split by sequence-homology clusters</p>
+        </div>
+        <div>
+          <dt>Function queries</dt>
+          <dd>28</dd>
+          <p>GO molecular-function names and definitions</p>
+        </div>
+        <div>
+          <dt>Test candidates</dt>
+          <dd>300</dd>
+          <p>Query-specific exclusions are applied before scoring</p>
+        </div>
+        <div>
+          <dt>Eligible for replacement</dt>
+          <dd>297</dd>
+          <p>Test proteins with an available AlphaFold DB structure</p>
+        </div>
+      </dl>
+    </section>
+
+    <section class="wrap findings">
+      <h2>Key findings</h2>
+      <article>
+        <h3>Gains are concentrated in a minority of proteins.</h3>
+        <p>37 of the 297 eligible test proteins produced a positive change in macro nDCG@10 when replaced individually.</p>
+      </article>
+      <article>
+        <h3>Prediction quality and retrieval gain are different outcomes.</h3>
+        <p>The random forest achieved an AP of 0.4058. At a 10% replacement budget, its retrieval gain was +0.0032, compared with +0.0139 for the query ranking heuristic.</p>
+      </article>
+      <article>
+        <h3>A larger budget does not guarantee a larger gain.</h3>
+        <p>For the query ranking heuristic, the gain decreased from +0.0139 at a 10% budget to +0.0006 at a 20% budget.</p>
+      </article>
+      <p class="note">These are test-set point estimates for the primary analysis. Intervals and evaluation conditions are provided below; the results do not establish universal superiority of any strategy.</p>
+    </section>
+
+    <section class="wrap prose">
+      <h2>What is being replaced?</h2>
+      <p>Replacement switches a protein's structural score from ProstT5-generated 3Di to 3Di extracted from an AlphaFold DB structure. The term “upgrade” describes this operation; it does not assume that retrieval or structural quality must improve.</p>
+    </section>
+
+    <section class="wrap prose">
+      <h2>Most individual replacements have zero net macro gain</h2>
+      <div class="table-scroll">
+        <table class="gain-table">
+          <caption>Proteins among the 297 eligible test proteins, classified by the sign of the macro-average gain.</caption>
+          <thead>
+            <tr><th>Gain class</th><th class="num">Proteins</th><th class="num">Share</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Positive</td><td class="num">37</td><td class="num">12.5%</td></tr>
+            <tr><td>Zero</td><td class="num">227</td><td class="num">76.4%</td></tr>
+            <tr><td>Negative</td><td class="num">33</td><td class="num">11.1%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Gain is the change in macro nDCG@10 across the 28 queries after replacing one protein. Zero gain means that this aggregate difference is within the numerical tolerance of zero. It does not imply that every query, ranking, or structural representation remained unchanged.</p>
+    </section>
+
+    <section id="explore" class="wrap explore">
+      <h2>Results Explorer</h2>
+      <p id="data-status" class="note" role="status">Loading results...</p>
+      <div class="controls">
+        <div>
+          <p class="control-label" id="budget-label">Replacement budget</p>
+          <div class="budget-switch" role="group" aria-labelledby="budget-label">
+            <button type="button" data-fraction="0.05">5% · 15 proteins</button>
+            <button type="button" data-fraction="0.10" aria-pressed="true">10% · 30 proteins</button>
+            <button type="button" data-fraction="0.20">20% · 59 proteins</button>
+          </div>
+        </div>
+        <label class="field" for="strategy">Selection strategy
+          <select id="strategy">
+            <option value="logistic">Logistic regression</option>
+            <option value="random_forest_classifier">Random forest classifier</option>
+            <option value="ridge">Ridge regression</option>
+            <option value="query_ranking">Query ranking heuristic</option>
+          </select>
+        </label>
+      </div>
+      <p class="note">Budgets represent numbers of eligible proteins, not measured GPU time or monetary cost.</p>
+
+      <article class="result-panel">
+        <p id="condition" class="eyebrow">10% budget · 30 replacements · Sequence weight 0.10</p>
+        <p id="headline" class="headline">—</p>
+        <p class="headline-label">Change in macro nDCG@10</p>
+        <p id="baseline-line" class="note">No-replacement baseline: 0.2833</p>
+        <dl class="result-meta">
+          <div><dt>Before replacement</dt><dd id="before-ndcg">—</dd></div>
+          <div><dt>After replacement</dt><dd id="after-ndcg">—</dd></div>
+          <div><dt id="interval-kind">Interval</dt><dd id="interval-text">—</dd></div>
+        </dl>
+      </article>
+
+      <div class="chart-grid">
+        <figure>
+          <svg id="ap-chart" class="chart" role="img" aria-label="Positive-gain ranking by average precision"></svg>
+          <figcaption>Average precision (AP) ranks proteins with an observed positive replacement gain. The dashed line marks the positive-class prevalence, 37/297. AP is not retrieval MAP@10, and it does not mean the model is calibrated as a true success probability.</figcaption>
+        </figure>
+        <figure>
+          <svg id="gain-chart" class="chart" role="img" aria-label="Retrieval gain for the selected budget"></svg>
+          <figcaption id="gain-caption">The horizontal axis is the change in macro nDCG@10. Random selection is a comparison only and has no per-query results.</figcaption>
+        </figure>
+      </div>
+      <p>AP measures how highly proteins with observed positive replacement gains are ranked. Retrieval gain measures the outcome after selecting proteins, replacing their scores, and reranking the candidate library. Both outcomes need to be evaluated.</p>
+
+      <figure class="interval-block">
+        <svg id="interval-chart" class="chart" role="img" aria-label="Retrieval gain and intervals for the selected budget"></svg>
+        <figcaption>Model and heuristic intervals resample query-level differences with the selected proteins fixed. The random-selection range summarizes 100 random subsets. Neither represents variation across repeated model training, and the comparisons are not adjusted for multiplicity. All three budgets use the same horizontal axis.</figcaption>
+      </figure>
+    </section>
+
+    <section id="queries" class="wrap">
+      <h2>Browse Function Queries</h2>
+      <p>Explore how retrieval changes for individual molecular functions under the selected strategy and budget.</p>
+      <label class="field" for="query-search">Search by GO ID or function name
+        <input id="query-search" type="search" autocomplete="off" placeholder="e.g., GO:0003723 or RNA binding">
+      </label>
+      <p id="query-count" class="note" aria-live="polite"></p>
+      <p id="macro-note" class="note"></p>
+      <div class="query-head" aria-hidden="true">
+        <span>Function query</span><span>Before replacement</span><span>After replacement</span><span>Gain</span>
+      </div>
+      <div id="query-list" class="query-list"></div>
+      <p id="query-empty" class="note" hidden>No matching function queries.</p>
+      <button type="button" id="show-all" class="button ghost">Show all 28 queries</button>
+    </section>
+
+    <section id="method" class="wrap">
+      <h2>Methods and scope</h2>
+      <details>
+        <summary>Methods</summary>
+        <p>The study uses public CAFA5 sequences and time-delayed function annotations. Proteins are assigned to training, validation, and test sets by sequence-homology cluster. ProTrek encodes sequences, structural tokens, and function text. The primary analysis uses a sequence fusion weight of 0.10, selected through the existing validation procedure.</p>
+        <p>Gain prediction uses 40 features available before replacement. Hyperparameters and score directions are chosen on validation data. The course analysis recomputes results on the previously used test split; it is not a new independent validation.</p>
+      </details>
+      <details>
+        <summary>Evaluation labels</summary>
+        <p>Known positives and annotation pairs overlapping the old CAFA5 training labels are excluded from query-specific scoring. Unlabeled proteins remain in the ranking, but missing annotations do not establish biological negatives.</p>
+      </details>
+      <details>
+        <summary>Scope of the findings</summary>
+        <p>Queries were selected partly using their test-set positive counts, so the findings apply to this selected set of 28 queries. Gain also depends on the candidate library and selection context.</p>
+        <p>Existing AlphaFold DB structures are used here. Replacement budgets are count-based approximations and do not establish savings in structure-prediction time or cost.</p>
+      </details>
+      <h3>Glossary</h3>
+      <dl class="glossary">
+        <div><dt>GO molecular function</dt><dd>A standardized description of a protein's molecular activity.</dd></div>
+        <div><dt>3Di</dt><dd>A structural alphabet representing local three-dimensional relationships.</dd></div>
+        <div><dt>nDCG@10</dt><dd>A ranking metric that rewards relevant proteins appearing near the top of the first ten results.</dd></div>
+        <div><dt>AP</dt><dd>Average precision for ranking proteins with positive replacement gains; distinct from retrieval MAP@10.</dd></div>
+        <div><dt>Macro average</dt><dd>An equally weighted average over scorable queries.</dd></div>
+        <div><dt>Replacement budget</dt><dd>The number of eligible proteins that may switch structural representations.</dd></div>
+      </dl>
+    </section>
+
+    <section id="resources" class="wrap">
+      <h2>Resources</h2>
+      <p id="download-note">Resources will be added when available.</p>
+      <p id="download-actions"></p>
+      <p><a href="https://github.com/chengyu-s">View GitHub Profile</a></p>
+      <h3>References</h3>
+      <ol class="references">
+        <li>CAFA5 evaluation data: <a href="https://doi.org/10.5281/zenodo.22381862">https://doi.org/10.5281/zenodo.22381862</a></li>
+        <li>ProTrek: <a href="https://doi.org/10.1038/s41587-025-02836-0">https://doi.org/10.1038/s41587-025-02836-0</a></li>
+        <li>ProstT5: <a href="https://doi.org/10.1093/nargab/lqae150">https://doi.org/10.1093/nargab/lqae150</a></li>
+        <li>Foldseek: <a href="https://doi.org/10.1038/s41587-023-01773-0">https://doi.org/10.1038/s41587-023-01773-0</a></li>
+        <li>AlphaFold: <a href="https://doi.org/10.1038/s41586-021-03819-2">https://doi.org/10.1038/s41586-021-03819-2</a></li>
+      </ol>
+    </section>
+  </main>
+  <footer class="site">
+    <div class="wrap">Sun Chengyu · Course Data Analysis Project · Data: CAFA5</div>
+  </footer>
+  <script src="assets/site.js"></script>
+</body>
+</html>
