@@ -1,15 +1,9 @@
 # Protein function retrieval course site
 
-English course site for Sun Chengyu. It is prepared for a GitHub Pages project site.
-
-Planned repository: `protein-retrieval-course`  
-Planned Pages source: the `docs` directory on the `main` branch  
-Planned addresses, not yet published:
+English course site for Sun Chengyu. The public repository is [protein-retrieval-course](https://github.com/chengyu-s/protein-retrieval-course). GitHub Pages publishes the `docs` directory from the `main` branch.
 
 - https://chengyu-s.github.io/protein-retrieval-course/
 - https://chengyu-s.github.io/protein-retrieval-course/project.html
-
-These addresses are not live. This folder has not been uploaded.
 
 ## What is included
 
@@ -97,6 +91,6 @@ zip -r course_website_v4_en.zip course_website_v4_en -x '*/__pycache__/*' '*/.ff
 
 Do not put a local preview server or a browser profile in the zip.
 
-## Publishing later
+## Publishing
 
-When you choose to publish, create the repository `protein-retrieval-course`, put this site on `main`, and set GitHub Pages to the `docs` folder. Do not change another personal website to do that. The planned addresses above should be checked in a browser after publishing; they are not evidence that the site is already online.
+The repository is public and GitHub Pages is set to `main` / `docs`. A later change is published by pushing to `main`. Do not replace another personal website with this project.

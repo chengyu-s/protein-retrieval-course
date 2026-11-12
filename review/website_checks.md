@@ -1,15 +1,15 @@
 # Website checks for the English version
 
-This round created the English site and the check commands. The commands were not run.
+The site is published from the `main` branch, using the `docs` folder.
 
-Not done in this round:
+Checked after publishing: the homepage, project page, stylesheet, script, and `data/site_data.json` each returned HTTP 200 at `https://chengyu-s.github.io/protein-retrieval-course/`. The homepage contains the name Sun Chengyu and the GitHub link.
 
-- Local preview with `python -m http.server` was not started.
-- The `/protein-retrieval-course/` subpath was not requested.
+Not checked:
+
 - No browser was opened, so there are no screenshots at 1440 or 390 pixels.
+- Phone layout, chart labels, search, budget changes, and keyboard focus were not viewed.
 - `python tools/check_site.py` was not run.
 - The zip was not created.
-- Nothing was uploaded to GitHub. The planned Pages addresses are not live.
 
 Earlier Chinese versions had their own checks. Those results belong to those folders. They are not evidence that this English layout is correct.
 
